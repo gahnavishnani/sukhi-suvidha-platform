@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLanguage } from "../context/LanguageContext";
 import { addHistory } from "../utils/history";
+import API_BASE_URL from "../utils/api";
 
 const UploadPanel = ({ t }) => {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -27,7 +28,7 @@ const UploadPanel = ({ t }) => {
     formData.append("language_code", languageCode);
 
     try {
-      const response = await fetch("http://localhost:8000/upload-ocr", {
+      const response = await fetch(`${API_BASE_URL}/upload-ocr`, {
         method: "POST",
         body: formData,
       });
@@ -47,7 +48,7 @@ const UploadPanel = ({ t }) => {
           thumbnail,
           extra: {
             audioUrl: data.audio_url
-              ? `http://localhost:8000${data.audio_url}`
+              ? `${API_BASE_URL}${data.audio_url}`
               : null,
           },
         });
@@ -56,7 +57,7 @@ const UploadPanel = ({ t }) => {
           state: {
             simplifiedText: data.text,
             audioUrl: data.audio_url
-              ? `http://localhost:8000${data.audio_url}`
+              ? `${API_BASE_URL}${data.audio_url}`
               : null,
           },
         });
