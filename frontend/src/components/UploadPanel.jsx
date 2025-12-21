@@ -1,9 +1,11 @@
+
 // src/components/UploadPanel.jsx
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLanguage } from "../context/LanguageContext";
 import { addHistory } from "../utils/history";
-import API_BASE_URL from "../utils/api";
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const UploadPanel = ({ t }) => {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -33,38 +35,34 @@ const UploadPanel = ({ t }) => {
         body: formData,
       });
 
-      if (response.ok) {
-        const data = await response.json();
-
-        const thumbnail = selectedFile
-          ? URL.createObjectURL(selectedFile)
-          : null;
-
-        addHistory({
-          type: "upload",
-          title: selectedFile.name || "Uploaded file",
-          subtitle: t?.uploading || "Uploaded",
-          details: data.text || "",
-          thumbnail,
-          extra: {
-            audioUrl: data.audio_url
-              ? `${API_BASE_URL}${data.audio_url}`
-              : null,
-          },
-        });
-
-        navigate("/simplified-output", {
-          state: {
-            simplifiedText: data.text,
-            audioUrl: data.audio_url
-              ? `${API_BASE_URL}${data.audio_url}`
-              : null,
-          },
-        });
-      } else {
-        const errorData = await response.json();
-        alert(`Upload failed: ${errorData.detail || "Unknown error"}`);
+      if (!response.ok) {
+        const err = await response.json();
+        throw new Error(err.detail || "Upload failed");
       }
+
+      const data = await response.json();
+
+      const thumbnail = URL.createObjectURL(selectedFile);
+
+      const audioUrl = data.audio_url
+        ? `${API_BASE_URL}${data.audio_url}`
+        : null;
+
+      addHistory({
+        type: "upload",
+        title: selectedFile.name,
+        subtitle: t?.uploading || "Uploaded",
+        details: data.text || "",
+        thumbnail,
+        extra: { audioUrl },
+      });
+
+      navigate("/simplified-output", {
+        state: {
+          simplifiedText: data.text,
+          audioUrl,
+        },
+      });
     } catch (error) {
       alert("Error uploading file: " + error.message);
     } finally {
@@ -106,15 +104,14 @@ const UploadPanel = ({ t }) => {
         onClick={handleUpload}
         disabled={isUploading || !selectedFile}
         className={`w-full py-3 rounded-2xl font-semibold text-white text-sm md:text-base
-                    transition-all duration-200
           ${
             isUploading || !selectedFile
               ? "bg-gray-400 cursor-not-allowed"
-              : "bg-gray-700 hover:bg-gray-800 shadow-md"
+              : "bg-gray-700 hover:bg-gray-800"
           }`}
       >
         {isUploading
-          ? t?.uploading || "Uploading..."
+          ? t?.uploading || "Processing..."
           : t?.uploadSimplify || "Upload & Simplify"}
       </button>
     </div>
