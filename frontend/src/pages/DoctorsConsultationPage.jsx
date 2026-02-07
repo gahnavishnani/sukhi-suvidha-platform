@@ -18,7 +18,6 @@ const DoctorsConsultationPage = () => {
     const lang = localStorage.getItem("preferredLanguage") || "en";
     setT(translate(lang));
 
-    // Build the doctors dataset using translation keys for premium i18n support
     const ds = [
       {
         id: 1,
@@ -75,7 +74,7 @@ const DoctorsConsultationPage = () => {
     setDoctors(ds);
   }, []);
 
-  // ---------- Booking (saves to localStorage history) ----------
+  
   const handleBookAppointment = (doctor) => {
     setSelectedDoctor(doctor);
     setAppointmentType("offline");
@@ -83,7 +82,7 @@ const DoctorsConsultationPage = () => {
   };
 
   const confirmAppointment = () => {
-    // Save to localStorage history (append)
+    
     try {
       const history = JSON.parse(localStorage.getItem("historyItems") || "[]");
       const item = {
@@ -107,25 +106,24 @@ const DoctorsConsultationPage = () => {
     }
   };
 
-  // ---------- Video Call (embedded modal, loopback demo) ----------
-  // This creates two RTCPeerConnections in-page to simulate a working call (no server)
+  
   const startVideoCall = async (doctor) => {
     setSelectedDoctor(doctor);
     setShowVideoModal(true);
 
-    // getMedia
+   
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
       localStreamRef.current = stream;
       if (localVideoRef.current) localVideoRef.current.srcObject = stream;
 
-      // create peer connections
-      const pc1 = new RTCPeerConnection();
+     
+    const pc1 = new RTCPeerConnection();
       const pc2 = new RTCPeerConnection();
       pcLocalRef.current = pc1;
       pcRemoteRef.current = pc2;
 
-      // ICE candidate exchage
+    
       pc1.onicecandidate = (e) => {
         if (e.candidate) pc2.addIceCandidate(e.candidate).catch(console.error);
       };
@@ -133,12 +131,12 @@ const DoctorsConsultationPage = () => {
         if (e.candidate) pc1.addIceCandidate(e.candidate).catch(console.error);
       };
 
-      // remote track -> set to remote video element
+    
       pc2.ontrack = (ev) => {
         if (remoteVideoRef.current) remoteVideoRef.current.srcObject = ev.streams[0];
       };
 
-      // add local tracks to pc1
+    // add local tracks to pc1
       stream.getTracks().forEach((track) => pc1.addTrack(track, stream));
 
       // create offer/answer loop

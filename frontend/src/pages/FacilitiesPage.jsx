@@ -55,7 +55,7 @@ const FacilitiesPage = () => {
     }
   };
 
-  // FACILITY CARDS (ONLY 4 MAIN FEATURES)
+  
   const facilityCards = [
     {
       id: 1,

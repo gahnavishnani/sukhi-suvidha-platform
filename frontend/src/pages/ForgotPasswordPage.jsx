@@ -5,7 +5,7 @@ import { translate } from "../utils/translations.js";
 
 const ForgotPasswordPage = () => {
   const [t, setT] = useState(translate("en"));
-  const [step, setStep] = useState(1); // 1: Phone number, 2: OTP verification, 3: New password
+  const [step, setStep] = useState(1); 
   const [phoneNumber, setPhoneNumber] = useState("");
   const [otp, setOtp] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -23,7 +23,7 @@ const ForgotPasswordPage = () => {
     setLoading(true);
     setError("");
     
-    // Validate phone number
+   
     if (!phoneNumber || phoneNumber.length < 10) {
       setError(t.phoneInvalid || "Please enter a valid phone number");
       setLoading(false);
@@ -31,7 +31,7 @@ const ForgotPasswordPage = () => {
     }
     
     try {
-      // Simulate API call to send OTP
+      
       await new Promise(resolve => setTimeout(resolve, 1500));
       setStep(2);
     } catch (err) {

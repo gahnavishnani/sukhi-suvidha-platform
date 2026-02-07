@@ -3,30 +3,26 @@ import { translate } from "../utils/translations";
 import { useLanguage } from "../context/LanguageContext";
 
 const ChatbotWidget = () => {
-  const { language } = useLanguage(); // ✅ reactive language
+  const { language } = useLanguage(); 
   const t = translate(language);
 
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([]);
   const [currentStep, setCurrentStep] = useState("main");
 
-  // Medical flow states
+  
   const [activeSymptom, setActiveSymptom] = useState(null);
   const [answers, setAnswers] = useState([]);
   const [questionIndex, setQuestionIndex] = useState(0);
 
-  /* =======================
-     MAIN MENU
-  ======================= */
+ 
   const mainOptions = [
     { id: "symptoms", text: t.symptoms || "Symptoms" },
     { id: "medicine", text: t.medicine || "Medicine" },
     { id: "routine", text: t.routine || "Daily Health Tips" }
   ];
 
-  /* =======================
-     SUB OPTIONS
-  ======================= */
+ 
   const symptomOptions = [
     { id: "fever", text: t.fever || "Fever" },
     { id: "headache", text: t.headache || "Headache" },
@@ -74,9 +70,7 @@ const ChatbotWidget = () => {
     }
   };
 
-  /* =======================
-     MESSAGE HELPERS
-  ======================= */
+
   const botMessage = (text) =>
     setMessages((p) => [...p, { sender: "bot", text }]);
 
@@ -86,9 +80,6 @@ const ChatbotWidget = () => {
   const showOptions = (options) =>
     setMessages((p) => [...p, { sender: "bot", options }]);
 
-  /* =======================
-     OPTION HANDLER
-  ======================= */
   const handleOptionClick = (id, text) => {
     userMessage(text);
 
@@ -131,9 +122,7 @@ const ChatbotWidget = () => {
     resetToMain();
   };
 
-  /* =======================
-     TEXT INPUT
-  ======================= */
+ 
   const handleUserText = (text) => {
     userMessage(text);
     if (!activeSymptom) return;
@@ -161,9 +150,6 @@ const ChatbotWidget = () => {
     }, 800);
   };
 
-  /* =======================
-     START CHAT
-  ======================= */
   const startChat = () => {
     setIsOpen(true);
     setMessages([
@@ -172,9 +158,7 @@ const ChatbotWidget = () => {
     ]);
   };
 
-  /* =======================
-     UI (UNCHANGED)
-  ======================= */
+ 
   return (
     <div className="fixed bottom-6 right-6 z-50">
       {isOpen ? (
